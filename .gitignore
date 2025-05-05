@@ -2,3 +2,8 @@
 *#
 .direnv
 river_state
+main
+river-status-unstable-v1.c
+river-status-unstable-v1.h
+wlr-foreign-toplevel-management-unstable-v1.c
+wlr-foreign-toplevel-management-unstable-v1.h
