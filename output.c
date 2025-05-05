@@ -1,5 +1,6 @@
+#include "main.h"
+#include "string.h"
 #include <stdint.h>
-#include <stdio.h>
 #include <wayland-client.h>
 
 /* OUTPUT GEOMETRY */
@@ -15,12 +16,18 @@ handle_output_geometry(void* data,
                        const char* model,
                        int32_t transform)
 {
-    printf("Output geometry: %s %s at (%d, %d), p: %p\n",
-           make,
-           model,
-           x,
-           y,
-           wl_output);
+    WLOutputData* wl_output_data = data;
+
+    wl_output_data->x = x;
+    wl_output_data->y = y;
+    wl_output_data->physical_width = physical_width;
+    wl_output_data->physical_height = physical_height;
+    wl_output_data->subpixel = subpixel;
+    wl_output_data->make = strdup(make);
+    wl_output_data->model = strdup(model);
+    wl_output_data->transform = transform;
+
+    print_wl_output_data();
 }
 
 /* OUTPUT MODE */
@@ -32,21 +39,34 @@ handle_output_mode(void* data,
                    int32_t height,
                    int32_t refresh)
 {
-    printf("Output mode: %dx%d @ %d Hz\n", width, height, refresh / 1000);
+    WLOutputData* wl_output_data = data;
+
+    wl_output_data->flags = flags;
+    wl_output_data->width = width;
+    wl_output_data->height = height;
+    wl_output_data->refresh = refresh;
+
+    print_wl_output_data();
 }
 
 /* OUTPUT NAME */
 void
 handle_output_name(void* data, struct wl_output* wl_output, const char* name)
 {
-    printf("Output name: %s\n", name);
+    WLOutputData* wl_output_data = data;
+    wl_output_data->name = strdup(name);
+
+    print_wl_output_data();
 }
 
 /* OUTPUT SCALE */
 void
 handle_output_scale(void* data, struct wl_output* wl_output, int32_t factor)
 {
-    printf("Output scale: %d\n", factor);
+    WLOutputData* wl_output_data = data;
+    wl_output_data->factor = factor;
+
+    print_wl_output_data();
 }
 
 /* OUTPUT DESCRIPTION */
@@ -55,7 +75,10 @@ handle_output_description(void* data,
                           struct wl_output* wl_output,
                           const char* description)
 {
-    printf("Output description: %s\n", description);
+    WLOutputData* wl_output_data = data;
+    wl_output_data->description = strdup(description);
+
+    print_wl_output_data();
 }
 
 void

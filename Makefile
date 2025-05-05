@@ -12,7 +12,8 @@ SRC=main.c \
 	output_status.c \
 	seat_status.c \
 	output.c \
-	foreign_toplevel.c
+	foreign_toplevel.c \
+	printers.c
 
 
 PRO=river-status-unstable-v1.xml wlr-foreign-toplevel-management-unstable-v1.xml

@@ -1,5 +1,7 @@
+#include "main.h"
 #include "river-status-unstable-v1.h"
 #include <stdio.h>
+#include <string.h>
 
 /* FOCUSED OUTPUT */
 void
@@ -7,7 +9,8 @@ handle_focused_output(void* data,
                       struct zriver_seat_status_v1* zriver_seat_status_v1,
                       struct wl_output* output)
 {
-    printf("Focused Output: %p\n", output);
+    SeatStatusData* seat_status_data = data;
+    seat_status_data->focused_output = wl_output_data;
 }
 
 /* UNFOCUSED OUTPUT */
@@ -16,7 +19,8 @@ handle_unfocused_output(void* data,
                         struct zriver_seat_status_v1* zriver_seat_status_v1,
                         struct wl_output* output)
 {
-    printf("Unfocused Output: %p\n", output);
+    SeatStatusData* seat_status_data = data;
+    seat_status_data->unfocused_output = wl_output_data;
 }
 
 /* FOCUSED VIEW TITLE */
@@ -25,7 +29,10 @@ handle_focused_view(void* data,
                     struct zriver_seat_status_v1* zriver_seat_status_v1,
                     const char* title)
 {
-    printf("Focused View: %s\n", title);
+    SeatStatusData* seat_status_data = data;
+    seat_status_data->focused_view = strdup(title);
+
+    print_seat_status_data();
 }
 
 /* KEYMAP MODE */
@@ -34,5 +41,8 @@ handle_mode(void* data,
             struct zriver_seat_status_v1* zriver_seat_status_v1,
             const char* name)
 {
-    printf("Mode: %s\n", name);
+    SeatStatusData* seat_status_data = data;
+    seat_status_data->keymap_mode_name = strdup(name);
+
+    print_seat_status_data();
 }
