@@ -6,7 +6,14 @@ OUT=main
 
 CFLAGS=`pkg-config --cflags --libs wayland-client`
 
-SRC=main.c river-status-unstable-v1.c wlr-foreign-toplevel-management-unstable-v1.c
+SRC=main.c \
+	river-status-unstable-v1.c \
+	wlr-foreign-toplevel-management-unstable-v1.c \
+	output_status.c \
+	seat_status.c \
+	output.c \
+	foreign_toplevel.c
+
 
 PRO=river-status-unstable-v1.xml wlr-foreign-toplevel-management-unstable-v1.xml
 
