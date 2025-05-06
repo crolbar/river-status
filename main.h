@@ -8,7 +8,6 @@
 extern struct WLOutputData* wl_output_data;
 extern struct OutputStatusData* output_status_data;
 extern struct SeatStatusData* seat_status_data;
-extern struct ForeignToplevelData* foreign_toplevel_data;
 
 extern bool print_human;
 
@@ -47,12 +46,6 @@ typedef struct SeatStatusData
     char* keymap_mode_name;
 } SeatStatusData;
 
-typedef struct ForeignToplevelData
-{
-    char* title;
-    char* app_id;
-} ForeignToplevelData;
-
 void
 print_wl_output_data();
 
@@ -61,8 +54,5 @@ print_output_status_data();
 
 void
 print_seat_status_data();
-
-void
-print_foreign_toplevel_data();
 
 #endif

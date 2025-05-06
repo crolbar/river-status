@@ -5,9 +5,7 @@
 #include <wayland-client.h>
 
 #include "river-status-unstable-v1.h"
-#include "wlr-foreign-toplevel-management-unstable-v1.h"
 
-#include "foreign_toplevel.h"
 #include "main.h"
 #include "output.h"
 #include "output_status.h"
@@ -22,9 +20,6 @@ static bool out_status_listener_set = false;
 static struct zriver_seat_status_v1* seat_status = NULL;
 static bool seat_status_listener_set = false;
 
-static struct zwlr_foreign_toplevel_manager_v1* toplevel_mgr = NULL;
-static bool toplevel_mgr_listener_set = false;
-
 struct wl_display* wl_display = NULL;
 struct wl_registry* wl_registry = NULL;
 struct wl_output* wl_output = NULL;
@@ -33,8 +28,6 @@ struct wl_seat* wl_seat = NULL;
 struct WLOutputData* wl_output_data = NULL;
 struct OutputStatusData* output_status_data = NULL;
 struct SeatStatusData* seat_status_data = NULL;
-// TODO make this an array
-struct ForeignToplevelData* foreign_toplevel_data = NULL;
 
 bool print_human = true;
 
@@ -44,7 +37,6 @@ init_globals()
     wl_output_data = calloc(1, sizeof(struct WLOutputData));
     output_status_data = calloc(1, sizeof(struct OutputStatusData));
     seat_status_data = calloc(1, sizeof(struct SeatStatusData));
-    foreign_toplevel_data = calloc(1, sizeof(struct ForeignToplevelData));
 }
 
 static void
@@ -62,9 +54,6 @@ clean_globals()
 
     if (seat_status_data != NULL)
         free(seat_status_data);
-
-    if (foreign_toplevel_data != NULL)
-        free(foreign_toplevel_data);
 }
 
 static void
@@ -81,14 +70,6 @@ registry_global(void* data,
           wl_registry, name, &zriver_status_manager_v1_interface, 4);
     }
 
-    if (strcmp(interface, "zwlr_foreign_toplevel_manager_v1") == 0) {
-        toplevel_mgr =
-          wl_registry_bind(wl_registry,
-                           name,
-                           &zwlr_foreign_toplevel_manager_v1_interface,
-                           version);
-    }
-
     if (strcmp(interface, "wl_output") == 0) {
         wl_output =
           wl_registry_bind(wl_registry, name, &wl_output_interface, version);
@@ -100,14 +81,6 @@ registry_global(void* data,
     if (strcmp(interface, "wl_seat") == 0) {
         wl_seat =
           wl_registry_bind(wl_registry, name, &wl_seat_interface, version);
-    }
-
-    if (toplevel_mgr && !toplevel_mgr_listener_set) {
-        /* FOREIGN TOPLEVEL LISTENER */
-        zwlr_foreign_toplevel_manager_v1_add_listener(
-          toplevel_mgr, &foreign_toplevel_listener, foreign_toplevel_data);
-
-        toplevel_mgr_listener_set = true;
     }
 
     /* output listeners */
@@ -179,9 +152,6 @@ finish_wayland(void)
 
     if (seat_status != NULL)
         zriver_seat_status_v1_destroy(seat_status);
-
-    if (toplevel_mgr != NULL)
-        zwlr_foreign_toplevel_manager_v1_destroy(toplevel_mgr);
 
     if (wl_registry != NULL)
         wl_registry_destroy(wl_registry);

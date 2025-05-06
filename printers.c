@@ -119,27 +119,3 @@ print_seat_status_data()
         return;
     }
 }
-
-void
-print_human_foreign_toplevel_data()
-{
-    if (foreign_toplevel_data->title == NULL)
-        return;
-
-    if (foreign_toplevel_data->app_id == NULL)
-        return;
-
-    printf("title: %s\n"
-           "app_id: %s\n",
-           foreign_toplevel_data->title,
-           foreign_toplevel_data->app_id);
-}
-
-void
-print_foreign_toplevel_data()
-{
-    if (print_human) {
-        print_human_foreign_toplevel_data();
-        return;
-    }
-}
