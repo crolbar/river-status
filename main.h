@@ -10,6 +10,7 @@ extern struct OutputStatusData* output_status_data;
 extern struct SeatStatusData* seat_status_data;
 
 extern bool print_human;
+extern bool print_json;
 
 typedef struct WLOutputData
 {
@@ -18,8 +19,8 @@ typedef struct WLOutputData
     int32_t physical_width;
     int32_t physical_height;
     int32_t subpixel;
-    const char* make;
-    const char* model;
+    char* make;
+    char* model;
     int32_t transform;
     uint32_t flags;
     int32_t width;
@@ -27,7 +28,7 @@ typedef struct WLOutputData
     int32_t refresh;
     char* name;
     int32_t factor;
-    const char* description;
+    char* description;
 } WLOutputData;
 
 typedef struct OutputStatusData
@@ -35,7 +36,7 @@ typedef struct OutputStatusData
     uint32_t focused_tags;
     struct wl_array* view_tags;
     uint32_t urgent_tags;
-    const char* layout_name;
+    char* layout_name;
 } OutputStatusData;
 
 typedef struct SeatStatusData
@@ -47,12 +48,6 @@ typedef struct SeatStatusData
 } SeatStatusData;
 
 void
-print_wl_output_data();
-
-void
-print_output_status_data();
-
-void
-print_seat_status_data();
+print_data();
 
 #endif

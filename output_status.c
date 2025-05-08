@@ -12,7 +12,7 @@ handle_focused_tags(void* data,
     OutputStatusData* output_status_data = data;
     output_status_data->focused_tags = tags;
 
-    print_output_status_data();
+    print_data();
 }
 
 /* VIEW TAGS (`tags` field of all views) */
@@ -23,14 +23,16 @@ handle_view_tags(void* data,
 {
     OutputStatusData* output_status_data = data;
 
-    if (output_status_data->view_tags != NULL)
+    if (output_status_data->view_tags != NULL) {
         wl_array_release(output_status_data->view_tags);
+        free(output_status_data->view_tags);
+    }
 
     output_status_data->view_tags = malloc(sizeof(struct wl_array));
     wl_array_init(output_status_data->view_tags);
     wl_array_copy(output_status_data->view_tags, tags);
 
-    print_output_status_data();
+    print_data();
 }
 
 /* URGENT TAGS */
@@ -42,7 +44,7 @@ handle_urgent_tags(void* data,
     OutputStatusData* output_status_data = data;
     output_status_data->urgent_tags = tags;
 
-    print_output_status_data();
+    print_data();
 }
 
 /* LAYOUT NAME */
@@ -52,9 +54,13 @@ handle_layout_name(void* data,
                    const char* name)
 {
     OutputStatusData* output_status_data = data;
+
+    if (output_status_data->layout_name != NULL)
+        free(output_status_data->layout_name);
+
     output_status_data->layout_name = strdup(name);
 
-    print_output_status_data();
+    print_data();
 }
 
 void

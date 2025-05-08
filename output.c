@@ -1,6 +1,7 @@
 #include "main.h"
 #include "string.h"
 #include <stdint.h>
+#include <stdlib.h>
 #include <wayland-client.h>
 
 /* OUTPUT GEOMETRY */
@@ -23,11 +24,16 @@ handle_output_geometry(void* data,
     wl_output_data->physical_width = physical_width;
     wl_output_data->physical_height = physical_height;
     wl_output_data->subpixel = subpixel;
+    if (wl_output_data->make != NULL)
+        free(wl_output_data->make);
     wl_output_data->make = strdup(make);
+
+    if (wl_output_data->model != NULL)
+        free(wl_output_data->model);
     wl_output_data->model = strdup(model);
     wl_output_data->transform = transform;
 
-    print_wl_output_data();
+    print_data();
 }
 
 /* OUTPUT MODE */
@@ -46,7 +52,7 @@ handle_output_mode(void* data,
     wl_output_data->height = height;
     wl_output_data->refresh = refresh;
 
-    print_wl_output_data();
+    print_data();
 }
 
 /* OUTPUT NAME */
@@ -54,9 +60,11 @@ void
 handle_output_name(void* data, struct wl_output* wl_output, const char* name)
 {
     WLOutputData* wl_output_data = data;
+    if (wl_output_data->name != NULL)
+        free(wl_output_data->name);
     wl_output_data->name = strdup(name);
 
-    print_wl_output_data();
+    print_data();
 }
 
 /* OUTPUT SCALE */
@@ -66,7 +74,7 @@ handle_output_scale(void* data, struct wl_output* wl_output, int32_t factor)
     WLOutputData* wl_output_data = data;
     wl_output_data->factor = factor;
 
-    print_wl_output_data();
+    print_data();
 }
 
 /* OUTPUT DESCRIPTION */
@@ -76,9 +84,11 @@ handle_output_description(void* data,
                           const char* description)
 {
     WLOutputData* wl_output_data = data;
+    if (wl_output_data->description != NULL)
+        free(wl_output_data->description);
     wl_output_data->description = strdup(description);
 
-    print_wl_output_data();
+    print_data();
 }
 
 void

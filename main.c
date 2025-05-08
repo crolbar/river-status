@@ -30,6 +30,18 @@ struct OutputStatusData* output_status_data = NULL;
 struct SeatStatusData* seat_status_data = NULL;
 
 bool print_human = true;
+bool print_json = false;
+
+static void
+parse_args(char** argv, int argc)
+{
+    for (int i = 0; i < argc; i++) {
+        if (strcmp(argv[i], "--json") == 0) {
+            print_json = true;
+            print_human = false;
+        }
+    }
+}
 
 static void
 init_globals()
@@ -42,18 +54,43 @@ init_globals()
 static void
 clean_globals()
 {
-    if (wl_output_data != NULL)
+    if (wl_output_data != NULL) {
+        if (wl_output_data->name != NULL)
+            free(wl_output_data->name);
+
+        if (wl_output_data->description != NULL)
+            free(wl_output_data->description);
+
+        if (wl_output_data->make != NULL)
+            free(wl_output_data->make);
+
+        if (wl_output_data->model != NULL)
+            free(wl_output_data->model);
+
         free(wl_output_data);
+    }
 
     if (output_status_data != NULL) {
-        if (output_status_data->view_tags != NULL)
+        if (output_status_data->layout_name != NULL)
+            free(output_status_data->layout_name);
+
+        if (output_status_data->view_tags != NULL) {
             wl_array_release(output_status_data->view_tags);
+            free(output_status_data->view_tags);
+        }
 
         free(output_status_data);
     }
 
-    if (seat_status_data != NULL)
+    if (seat_status_data != NULL) {
+        if (seat_status_data->focused_view != NULL)
+            free(seat_status_data->focused_view);
+
+        if (seat_status_data->keymap_mode_name != NULL)
+            free(seat_status_data->keymap_mode_name);
+
         free(seat_status_data);
+    }
 }
 
 static void
@@ -167,8 +204,9 @@ finish_wayland(void)
 }
 
 int
-main(int argc, char* argv[])
+main(int argc, char** argv)
 {
+    parse_args(argv, argc);
     init_globals();
     if (init_wayland()) {
         while (wl_display_dispatch(wl_display) != -1) {
