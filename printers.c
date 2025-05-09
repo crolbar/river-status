@@ -162,16 +162,68 @@ get_human_wl_output_data()
 static char*
 get_json_wl_output_data()
 {
-    return "wl_output json";
-}
-
-// TODO!!
-static void
-print_bitmask(uint32_t value)
-{
-    for (int i = 10; i >= 0; i--) {
-        printf("%d", (value >> i) & 1);
+    if (wl_output_data->name == NULL) {
+        return "{}";
     }
+    if (wl_output_data->description == NULL) {
+        return "{}";
+    }
+    if (wl_output_data->make == NULL) {
+        return "{}";
+    }
+    if (wl_output_data->model == NULL) {
+        return "{}";
+    }
+
+    char* fmt = "{\"name\": %s,"
+                "\"description\": %s,"
+                "\"make\": %s,"
+                "\"model\": %s,"
+                "\"transform\": %d,"
+                "\"flags\": %d,"
+                "\"physical_width\": %d,"
+                "\"physical_height\": %d,"
+                "\"subpixel\": %d,"
+                "\"x\": %d,"
+                "\"y\": %d,"
+                "\"width\": %d,"
+                "\"height\": %d,"
+                "\"refresh\": %d,"
+                "\"factor\": %d}";
+
+    char* name = json_encode_string(wl_output_data->name);
+    char* description = json_encode_string(wl_output_data->description);
+    char* make = json_encode_string(wl_output_data->make);
+    char* model = json_encode_string(wl_output_data->model);
+
+    size_t size = strlen(fmt) + strlen(name) + strlen(description) +
+                  strlen(make) + strlen(model);
+    char* out = malloc(size);
+
+    sprintf(out,
+            fmt,
+            name,
+            description,
+            make,
+            model,
+            wl_output_data->transform,
+            wl_output_data->flags,
+            wl_output_data->physical_width,
+            wl_output_data->physical_height,
+            wl_output_data->subpixel,
+            wl_output_data->x,
+            wl_output_data->y,
+            wl_output_data->width,
+            wl_output_data->height,
+            wl_output_data->refresh / 1000,
+            wl_output_data->factor);
+
+    free(name);
+    free(description);
+    free(make);
+    free(model);
+
+    return out;
 }
 
 static char*
@@ -309,12 +361,13 @@ static void
 print_json_data()
 {
     char* wl_output = get_json_wl_output_data();
+    size_t wl_output_len = strlen(wl_output);
     char* output_status = get_json_output_status_data();
     size_t output_status_len = strlen(output_status);
     char* seat_status = get_json_seat_status_data();
     size_t seat_status_len = strlen(seat_status);
 
-    char* fmt = "{\"wl_output\": \"%s\", \"output_status\": %s, "
+    char* fmt = "{\"wl_output\": %s, \"output_status\": %s, "
                 "\"seat_status\": %s}\n";
 
     size_t size =
@@ -326,6 +379,8 @@ print_json_data()
         free(output_status);
     if (seat_status_len > 2)
         free(seat_status);
+    if (wl_output_len > 2)
+        free(wl_output);
 }
 
 void
