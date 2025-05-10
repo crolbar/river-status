@@ -1,8 +1,9 @@
-.PHONY: all
+.PHONY: all install clean
 
 CC=gcc
 
-OUT=main
+BINS=river-status
+PREFIX ?= /usr/local
 
 CFLAGS=`pkg-config --cflags --libs wayland-client`
 
@@ -18,17 +19,20 @@ PRO=river-status-unstable-v1.xml
 
 PRO_OUT=river-status-unstable-v1.c river-status-unstable-v1.h
 
-$(OUT): $(SRC) $(PRO_OUT)
-	$(CC) $(CFLAGS) -o $(OUT) $(SRC)
+all: $(BINS)
 
+$(BINS): $(SRC) $(PRO_OUT)
+	$(CC) $(CFLAGS) -o $(BINS) $(SRC)
 
 $(PRO_OUT): $(PRO)
 	wayland-scanner client-header river-status-unstable-v1.xml river-status-unstable-v1.h
 	wayland-scanner private-code river-status-unstable-v1.xml river-status-unstable-v1.c
 
+install: all
+	install -D -t $(DESTDIR)$(PREFIX)/bin $(BINS)
 
-run: clean $(OUT)
-	./$(OUT)
+run: clean $(BINS)
+	./$(BINS)
 
 clean:
-	rm -f $(OUT)
+	$(RM) $(BINS)

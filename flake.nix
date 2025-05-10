@@ -13,5 +13,19 @@
         clang-tools
       ];
     };
+
+    packages.${system}.default = pkgs.stdenv.mkDerivation {
+      pname = "river-status";
+      version = "0.1";
+      src = ./.;
+
+      buildInputs = with pkgs; [
+        wayland-scanner
+        wayland
+        pkg-config
+      ];
+
+      makeFlags = ["PREFIX=$(out)"];
+    };
   };
 }
