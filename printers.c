@@ -362,18 +362,56 @@ print_json_data()
 {
     char* wl_output = get_json_wl_output_data();
     size_t wl_output_len = strlen(wl_output);
+    char* wl_output_key = "\"wl_output\": ";
+
     char* output_status = get_json_output_status_data();
     size_t output_status_len = strlen(output_status);
+    char* output_status_key = "\"output_status\": ";
+
     char* seat_status = get_json_seat_status_data();
     size_t seat_status_len = strlen(seat_status);
+    char* seat_status_key = "\"seat_status\": ";
 
-    char* fmt = "{\"wl_output\": %s, \"output_status\": %s, "
-                "\"seat_status\": %s}\n";
+    size_t size = 2 + 1;
+    if (print_wl_output)
+        size += wl_output_len + strlen(wl_output_key) + 2;
 
-    size_t size =
-      strlen(wl_output) + output_status_len + seat_status_len + strlen(fmt);
+    if (print_output_status)
+        size += output_status_len + strlen(output_status_key) + 2;
 
-    printf(fmt, wl_output, output_status, seat_status);
+    if (print_seat_status)
+        size += seat_status_len + strlen(seat_status_key);
+
+    char* out = malloc(size);
+
+    strcpy(out, "{");
+
+    if (print_wl_output) {
+        strcat(out, wl_output_key);
+        strcat(out, wl_output);
+
+        if (print_output_status || print_seat_status)
+            strcat(out, ", ");
+    }
+
+    if (print_output_status) {
+        strcat(out, output_status_key);
+        strcat(out, output_status);
+
+        if (print_seat_status)
+            strcat(out, ", ");
+    }
+
+    if (print_seat_status) {
+        strcat(out, seat_status_key);
+        strcat(out, seat_status);
+    }
+
+    strcat(out, "}\n");
+
+    printf("%s", out);
+
+    free(out);
 
     if (output_status_len > 2)
         free(output_status);

@@ -12,6 +12,10 @@ extern struct SeatStatusData* seat_status_data;
 extern bool print_human;
 extern bool print_json;
 
+extern bool print_wl_output;
+extern bool print_output_status;
+extern bool print_seat_status;
+
 typedef struct WLOutputData
 {
     int32_t x;

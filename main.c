@@ -32,6 +32,10 @@ struct SeatStatusData* seat_status_data = NULL;
 bool print_human = true;
 bool print_json = false;
 
+bool print_wl_output = false;
+bool print_output_status = false;
+bool print_seat_status = false;
+
 static void
 parse_args(char** argv, int argc)
 {
@@ -39,6 +43,18 @@ parse_args(char** argv, int argc)
         if (strcmp(argv[i], "--json") == 0) {
             print_json = true;
             print_human = false;
+        }
+        if (strcmp(argv[i], "--wl-output") == 0 ||
+            strcmp(argv[i], "-wo") == 0) {
+            print_wl_output = true;
+        }
+        if (strcmp(argv[i], "--output-status") == 0 ||
+            strcmp(argv[i], "-os") == 0) {
+            print_output_status = true;
+        }
+        if (strcmp(argv[i], "--seat-status") == 0 ||
+            strcmp(argv[i], "-ss") == 0) {
+            print_seat_status = true;
         }
     }
 }

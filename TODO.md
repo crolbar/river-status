@@ -1,5 +1,4 @@
 - [ ] multi output
-- [ ] json out
-- [ ] ouptional out
-- [ ] keyboard layout in status
+- [x] json out
+- [x] optional out
 
