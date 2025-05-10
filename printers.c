@@ -269,8 +269,8 @@ get_json_output_status_data()
     if (output_status_data->layout_name == NULL)
         return "{}";
 
-    int focused_tags = output_status_data->focused_tags;
-    int urgent_tags = output_status_data->urgent_tags;
+    int focused_tags = get_single_tag_human(output_status_data->focused_tags);
+    int urgent_tags = get_single_tag_human(output_status_data->urgent_tags);
     char* layout_name = json_encode_string(output_status_data->layout_name);
 
     uint32_t* vtags = output_status_data->view_tags->data;
